@@ -1,0 +1,40 @@
+2022CS51134 - Umang Tripathi
+2022CS11936 - Parth Verma
+
+The algorithm used in AIPlayer implementation is a combination of Monte Carlo Tree Search (MCTS) and heuristic evaluation to select the best move in the game. 
+
+1. Initialization and Game State Representation:
+The game board is represented as a 2D array (state), and various helper structures like union_connections are used to track connected components and their attributes.
+The AIPlayer uses several evaluation functions (check_bridge, check_fork, check_ring) to assess the current board state, identify potential winning moves, and evaluate connections between cells.
+
+2. Union-Find Algorithm:
+A custom union-find algorithm is used to track connected cells. Each cell is part of a disjoint set structure that facilitates the quick determination of connected components and their properties.
+This helps in checking for winning conditions like forks, bridges, and rings efficiently.
+
+3. Heuristic Evaluations:
+Virtual Bridges and Forks: Functions like check_virtual_bridge and check_virtual_fork help assess virtual connections between cells to detect potential winning moves.
+Immediate and Virtual Connections: get_immediate_connections and get_virtual_connections methods provide information on neighboring cells, both physically adjacent and virtually connected, to aid in move selection.
+Winning Move Detection: Methods like check_win_moves and check_win_moves_virtual are used to identify potential winning moves or moves that block an opponent's victory.
+
+4. Move Selection Heuristics:
+The AI considers possible moves and ranks them based on several factors:
+Winning Moves: Moves that create or complete bridges, forks, or rings are prioritized.
+Opponent Blocking: If the opponent is in a winning position, moves that block their victory are chosen.
+Virtual Connections: Virtual connections and the potential impact of each move on connected components are assessed to prioritize advantageous moves.
+
+5. Monte Carlo Tree Search (MCTS):
+MCTS is used to evaluate the potential outcomes of different moves by simulating random games.
+Each possible move is explored multiple times, and a score is computed based on the simulated outcomes, with a focus on balancing exploration (trying less-visited nodes) and exploitation (choosing nodes that yield good results).
+The AIPlayer uses the evaluation functions during MCTS to select moves that maximize the win probability for the AI and minimize the chances of the opponent winning.
+
+6. Heuristic Enhancement in MCTS:
+The evaluation function (evaluate_state) assigns scores to moves based on the proximity to forming winning connections or blocking the opponent.
+Moves are also weighted based on their ability to form virtual connections or connect to specific edges and corners, which are critical for achieving win conditions like forming rings or forks.
+
+7. Move Execution:
+After running MCTS, the AI selects the move with the highest evaluated score (MCTS_search).
+If no clear winning move is available, the AI defaults to heuristic-based selection (get_closest_next_moves) to choose a move that offers the most strategic advantage.
+
+8. Fallback Strategy:
+In the absence of a definitive winning or blocking move, the AI resorts to selecting a move from the possible actions list, using a combination of heuristics and randomness to explore less obvious moves.
+This algorithm is designed to balance immediate winning opportunities, block the opponent’s plans, and evaluate long-term strategic positioning using Monte Carlo simulations, making it capable of adapting to different game states and evolving its strategy as the game progresses.

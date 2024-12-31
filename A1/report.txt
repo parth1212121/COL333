@@ -1,0 +1,82 @@
+			Parth Verma 2022CS11936		Umang Tripathi 2022CS51134
+
+			Assignment 1: Correction Agent for ASR Errors in Voice-Enabled Assistants
+
+
+Approach : 
+
+	For this assignment after using various techniques like annealing, stochastic beam search, local search..  we found the best results were 
+	obtained if we just use local beam search. In local beam search we maintained a set of states that have a potential of giving a better results
+	in the future. The local beam search outperformed the annealing and even stochastic beam search in both final score and time taken for 
+	the final computation.
+
+	Main idea was to look at the sentence as a bunch of words, on which we apply our changes to obtain a neighbouring sentence. To generate 
+	neighbours we go over the phoneme table as well its substitution, for a given word we check whether the substitution is valid and do so if 
+	I have not flagged it earlier for giving poorer scores. After iterating over all the neighbours score I choose top k states with lowest score so as 
+	to generate new neighbours. Finally I report the best state which gave lowest score over the entire search.
+
+Data structure :
+		
+	replacement History : Its a nested dictionary of phoneme changes made , this will be finite in space and of polynomial order as each word has 
+			 finite number of possible changes
+			
+	candidates 	: Its a list to store the possible neighbouring candidates in the next iteration for the beam
+	
+	flag_start_words	: Its a set to store which words in the vocabulary that do not give a feasible score at the start 
+
+	flag_end_words	: Its a set to store which words in the vocabulary that do not give a feasible score at the end
+
+	beam 		: Its a heap which stores current k best states 
+
+
+
+Implementation:
+		
+	Input		:  Starting State , Phoneme table , vocabulary , and scoring function
+	Output		:  Best State ( lowest score ) 
+
+	
+	1) Initialisation
+	
+		1.1)  Beam : initial beam width is set to 6 with minimum size being 4
+
+		1.2)  Max iteration: the max iteration is set to 10, this means the search will be able to find at most 10 possible substitution with minimum cost
+		
+		1.3) Cost threshold : cost threshold is set to 1.1 times the current best cost to mark certain modifications flagged
+
+	2) Iteration
+		
+		2.1)  the initial beam set to neighbours of the initial state with maximum cost, while my beam is not empty and I have not exceeded my maximum
+		        number of iteration depth
+	
+		2.2)  at each iteration , for each element in my current beam I get the possible neighbouring candidates and select the best 'k' states from it
+		
+		2.3) Update the beam with these candidates and iterate again
+
+	3) Neighbours generation
+
+		3.1) Phoneme changes
+			
+			a) Iterate over the phoneme table as well as its substitution, for each word in the string do the corresponding replacement.
+			
+			b) if the replacement in the word increases the cost by the given threshold, the substitution is flagged.
+			
+			c) If the same substitution is encountered again, it is ignored 
+
+			
+		3.2) Vocabulary addition
+	
+			a) add a word at the beginning or at the end of the sentence to generate neighbours
+			
+			b) if the addition in the word increases the cost by the given threshold, the addition is flagged.
+		
+			c) A check k is maintained s that we dont add a word more than once in the starting or the ending 
+
+
+
+
+
+
+
+
+	
